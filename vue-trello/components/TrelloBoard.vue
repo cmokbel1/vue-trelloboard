@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Column } from "../types";
+import type { Column, Task } from "../types";
 import { nanoid } from "nanoid";
+import draggable from "vuedraggable";
 
 const columns = ref<Column[]>([
     {
@@ -38,7 +39,7 @@ const columns = ref<Column[]>([
     },
     {
         id: nanoid(),
-        title: "Backlog",
+        title: "newLog",
         tasks: [
             {
                 id: nanoid(),
@@ -48,20 +49,41 @@ const columns = ref<Column[]>([
         ],
     }
 ])
+const alt = useKeyModifier("Alt");
 
 </script>
 <template>
-    <div class="flex gap-4 overflow-x-auto items-start">
-        <div v-for="column in columns" :key="column.id"
-        class="bg-gray-200 p-5 rounded min-w-[250px]"
-        >
-        <header class="font-bold mb-4">
-                {{ column.title }}
-        </header>
-        <TrelloBoardTask v-for="task in column.tasks" :task="task" />
-        <footer>
-            <button class="text-gray-500">+ Add Card</button>
-        </footer>    
+    <div>
+        <draggable 
+        v-model="columns"
+        group="columns"
+        item-key="id"
+        class="flex gap-4 overflow-x-auto items-start"
+        :animation="150"
+        handle=".drag-handle">
+            <template #item="{ element: column }: {element: Column}">
+                <div class="bg-gray-200 p-5 rounded min-w-[250px]">
+                    <header class="font-bold mb-4">
+                        <DragHandle />
+                        {{ column.title }}
+                    </header>
+                    <draggable 
+                    v-model="column.tasks"
+                    :group="{name: 'tasks', pull: alt ? 'clone' : true }"
+                    item-key="id"
+                    :animation="150"
+                    handle=".drag-handle">
+                        <template #item="{element: task}: {element: Task}">
+                            <div>
+                            <TrelloBoardTask :task="task" />
+                            </div>
+                        </template>
+                    </draggable>
+                    <footer>
+                        <NewTask @add="column.tasks.push($event)"/>    
+                    </footer>
+                </div>
+            </template>
+        </draggable>
     </div>
-</div>
 </template>
