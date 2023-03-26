@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import type {Task} from "../types"
-defineProps<{
+import type {Task, ID} from "../types"
+const props = defineProps<{
     task:Task;
 }>();
+const emit = defineEmits<{
+    (e: "delete", payload: ID):void;
+}>();
+
+const focused = ref(false);
+onKeyStroke("Backspace", (e) => {
+    if (focused.value) emit("delete", props.task.id);
+});
 </script>
 <template>
     <div
     :title="task.createdAt.toLocaleDateString()"
     class="task bg-white p-2 mb-2 rounded shadow-sm max-w-[250px] flex"
+    @focus="focused=true"
+    @blur="focused=false"
+    tabindex="0"
     >
         <DragHandle class="pr-2"/>
-        <span>
+        <span class="text-clip">
             {{ task.title }}
         </span>
     </div>
@@ -29,4 +40,11 @@ defineProps<{
     content: "";
     @apply absolute top-0 right-0 bottom-0 left-0 bg-slate-300 rounded;
 }
+
+.task:focus,
+.task:focus-visible {
+    @apply outline-red-300 !important;
+    outline: red auto 1px;
+}
+
 </style>
