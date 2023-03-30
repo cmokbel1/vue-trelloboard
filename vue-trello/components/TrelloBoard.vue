@@ -75,7 +75,8 @@ function createColumn() {
         :animation="150"
         handle=".drag-handle">
             <template #item="{ element: column }: {element: Column}">
-                <div class="bg-gray-200 p-5 rounded min-w-[250px]">
+                <div class="bg-gray-200 p-5 rounded min-w-[250px]"
+                tabindex="0">
                     <header class="font-bold mb-4">
                         <DragHandle />
                         <input
@@ -84,6 +85,9 @@ function createColumn() {
                         type="text"
                         v-model="column.title" 
                         />
+                        <CloseButton
+                        @click.prevent="columns = columns.filter((col) => col.id !== column.id )"
+                         />
                     </header>
                     <draggable 
                     v-model="column.tasks"
@@ -91,12 +95,10 @@ function createColumn() {
                     item-key="id"
                     :animation="150"
                     handle=".drag-handle">
-                        <template #item="{element: task}: {element: Task}">
+                        <template #item="{element: task}: {element: Task}" class="flex">
                             <div>
-                            <TrelloBoardTask :task="task" 
-                            @delete="
-                            column.tasks = column.tasks.filter(task => task.id !== $event)
-                            "/>
+                            <TrelloBoardTask :task="task" :column="column"
+                            @delete="column.tasks = column.tasks.filter((t) => t.id !== $event)"/>
                             </div>
                         </template>
                     </draggable>

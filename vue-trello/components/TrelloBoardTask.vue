@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type {Task, ID} from "../types"
+import type {Task, ID, Column} from "../types"
 const props = defineProps<{
     task:Task;
+    column: Column;
 }>();
 const emit = defineEmits<{
     (e: "delete", payload: ID):void;
@@ -24,6 +25,9 @@ onKeyStroke("Backspace", (e) => {
         <span class="text-clip">
             {{ task.title }}
         </span>
+        <CloseButton
+        @click.prevent="column.tasks = column.tasks.filter((t) => t.id !== task.id)"
+        />
     </div>
 </template>
 <style>
