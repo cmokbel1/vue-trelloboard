@@ -3,53 +3,28 @@ import type { Column, Task } from "../types";
 import { nanoid } from "nanoid";
 import draggable from "vuedraggable";
 
-const columns = ref<Column[]>([
+const columns = useLocalStorage<Column[]>("taskboard",[
     {
         id: nanoid(),
-        title: "Backlog",
+        title: "First Column",
         tasks: [
             {
                 id: nanoid(),
-                title: "Create landing page",
+                title: "First tasks",
                 createdAt: new Date()
             }
         ],
     },
-    {
-        id: nanoid(),
-        title: "Backlog",
-        tasks: [
-            {
-                id: nanoid(),
-                title: "Create landing page",
-                createdAt: new Date()
-            }
-        ],
-    },
-    {
-        id: nanoid(),
-        title: "Backlog",
-        tasks: [
-            {
-                id: nanoid(),
-                title: "Create landing page",
-                createdAt: new Date()
-            }
-        ],
-    },
-    {
-        id: nanoid(),
-        title: "newLog",
-        tasks: [
-            {
-                id: nanoid(),
-                title: "Create landing page",
-                createdAt: new Date()
-            }
-        ],
-    }
 ])
 const alt = useKeyModifier("Alt");
+
+// to persist data to db
+// watch(columns, () => {
+
+// },
+// {
+    // deep:true
+// });
 
 function createColumn() {
     const column: Column = {
@@ -66,16 +41,16 @@ function createColumn() {
 }
 </script>
 <template>
-    <div class="flex items-start overflow-x-auto gap-4">
+    <div class="flex items-start gap-4">
         <draggable 
         v-model="columns" 
         group="columns" 
         item-key="id" 
-        class="flex gap-4 items-start" 
+        class="flex flex-wrap gap-4 items-start" 
         :animation="150"
         handle=".drag-handle">
             <template #item="{ element: column }: { element: Column }">
-                <div class="bg-gray-200 p-5 rounded min-w-[250px]" tabindex="0">
+                <div class="bg-gray-200 p-5 rounded min-w-[250px]">
                     <header class="font-bold mb-4 flex justify-between">
                         <div>
                             <DragHandle />
@@ -106,7 +81,7 @@ function createColumn() {
                 </div>
             </template>
         </draggable>
-        <button @click="createColumn" class="bg-gray-200 whitespace-nowrap p-2 rounded opacity-50">
+        <button @click="createColumn" class="bg-gray-200 whitespace-nowrap p-2 rounded opacity-50 items-end">
             +Create New Column
         </button>
     </div>
