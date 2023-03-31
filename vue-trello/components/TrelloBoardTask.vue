@@ -16,12 +16,12 @@ onKeyStroke("Backspace", (e) => {
 <template>
     <div
     :title="new Date(task.createdAt).toLocaleDateString()"
-    class="task bg-white p-2 mb-2 rounded shadow-sm max-w-[250px] flex justify-between"
+    class="task bg-white p-2 mb-2 rounded break-words shadow-sm max-w-[250px] flex justify-between"
     @focus="focused=true"
     @blur="focused=false"
     tabindex="0"
     >
-        <span class="text-clip">
+        <span class="break-words">
             <DragHandle class="pr-2"/>
             {{ task.title }}
         </span>
